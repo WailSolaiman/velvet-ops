@@ -1,40 +1,51 @@
-# One-page site (Vite + React)
+# Velvet Ops
 
-Landing page built with Vite, React, TypeScript, Tailwind CSS v4, and shadcn/ui (base-nova). See `docs/TODO.md` for the implementation checklist.
+**Velvet Ops** (فيلفت أوبس) is a product design and front-end studio. This repository powers our public site: a single-page experience that presents how we work, who we work with, and how to partner with us—built for clarity, motion, and Arabic-first typography.
 
-## Requirements
+---
 
-- **Node.js** 20.19+ (see `package.json` `engines`)
+## Local development
 
-## Scripts
+**Node.js** 20.19 or newer is required (`engines` in `package.json`).
 
-| Command        | Description        |
-| -------------- | ------------------ |
-| `npm run dev`  | Start dev server   |
-| `npm run build`| Production build   |
-| `npm run preview` | Preview production build |
-| `npm run lint` | ESLint             |
+```bash
+npm install
+npm run dev
+```
 
-## Project layout
+Open the URL shown in the terminal (typically `http://localhost:5173`).
 
-- `src/` — application code (`@/` alias → `src/`)
-- `src/components/ui/` — shadcn-style UI primitives
-- `src/lib/utils.ts` — `cn()` helper (`clsx` + `tailwind-merge`)
-- `src/lib/link.tsx` — re-exports `react-router-dom` (`Link`, etc.) instead of `next/link`
-- `src/providers/theme-provider.tsx` — `next-themes` (`class` on `<html>`)
-- `src/pages/home.tsx` — one-page shell: ordered sections + placeholders (Phase 3 replaces content)
-- `src/components/layout/` — `SiteHeader` (sticky nav + theme toggle), `PageSection`, `ThemeToggle`
-- `src/lib/site-nav.ts` — section id constants + shell nav config
-- `components/*.txt` — section reference specs from the design brief
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Development server with hot reload |
+| `npm run build` | Production build (`tsc` + Vite) |
+| `npm run preview` | Serve the production build locally |
+| `npm run lint` | ESLint |
 
-## Phase 1 dependencies (runtime)
+---
 
-| Area | Packages |
-| ---- | -------- |
-| Shared | `lucide-react`, `class-variance-authority`, `@radix-ui/react-slot`, `clsx`, `tailwind-merge` |
-| Animation | `framer-motion` (hero, testimonials), `motion` (Features spec / `motion/react`). Consider consolidating to one library in a later pass. |
-| Hero shaders | `@paper-design/shaders-react` |
-| Clients particles | `@tsparticles/react`, `@tsparticles/slim` |
-| Theming | `next-themes` |
-| Footer utilities | `color-bits`, `@radix-ui/react-icons` |
-| Routing | `react-router-dom` |
+## Stack
+
+Vite, React 19, TypeScript, Tailwind CSS v4, and shadcn-style UI primitives. The interface uses thoughtful motion, shader-based hero treatment, and theme support (light / dark) via `next-themes`.
+
+---
+
+## Repository layout
+
+| Path | Role |
+| --- | --- |
+| `src/pages/` | Page shells and composition |
+| `src/components/sections/` | Marketing sections (work, services, process, clients, pricing, testimonials, CTA, footer) |
+| `src/components/layout/` | Shared layout pieces (navigation patterns, back-to-top, theme toggle) |
+| `src/components/ui/` | Reusable UI and visual treatments |
+| `src/providers/` | App-wide providers (e.g. theme) |
+| `src/lib/` | Utilities, navigation config, routing helpers |
+| `public/` | Static assets |
+
+Path alias: `@/` → `src/`.
+
+Implementation notes and follow-ups live in `docs/TODO.md`.
+
+---
+
+© Velvet Ops. All rights reserved.
