@@ -1,73 +1,40 @@
-# React + TypeScript + Vite
+# One-page site (Vite + React)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Landing page built with Vite, React, TypeScript, Tailwind CSS v4, and shadcn/ui (base-nova). See `docs/TODO.md` for the implementation checklist.
 
-Currently, two official plugins are available:
+## Requirements
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Node.js** 20.19+ (see `package.json` `engines`)
 
-## React Compiler
+## Scripts
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+| Command        | Description        |
+| -------------- | ------------------ |
+| `npm run dev`  | Start dev server   |
+| `npm run build`| Production build   |
+| `npm run preview` | Preview production build |
+| `npm run lint` | ESLint             |
 
-## Expanding the ESLint configuration
+## Project layout
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- `src/` — application code (`@/` alias → `src/`)
+- `src/components/ui/` — shadcn-style UI primitives
+- `src/lib/utils.ts` — `cn()` helper (`clsx` + `tailwind-merge`)
+- `src/lib/link.tsx` — re-exports `react-router-dom` (`Link`, etc.) instead of `next/link`
+- `src/providers/theme-provider.tsx` — `next-themes` (`class` on `<html>`)
+- `src/pages/home.tsx` — one-page shell: ordered sections + placeholders (Phase 3 replaces content)
+- `src/components/layout/` — `SiteHeader` (sticky nav + theme toggle), `PageSection`, `ThemeToggle`
+- `src/lib/site-nav.ts` — section id constants + shell nav config
+- `components/*.txt` — section reference specs from the design brief
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Phase 1 dependencies (runtime)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+| Area | Packages |
+| ---- | -------- |
+| Shared | `lucide-react`, `class-variance-authority`, `@radix-ui/react-slot`, `clsx`, `tailwind-merge` |
+| Animation | `framer-motion` (hero, testimonials), `motion` (Features spec / `motion/react`). Consider consolidating to one library in a later pass. |
+| Hero shaders | `@paper-design/shaders-react` |
+| Clients particles | `@tsparticles/react`, `@tsparticles/slim` |
+| Theming | `next-themes` |
+| Footer utilities | `color-bits`, `@radix-ui/react-icons` |
+| Routing | `react-router-dom` |
