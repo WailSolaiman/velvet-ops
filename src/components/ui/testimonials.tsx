@@ -107,8 +107,8 @@ function TestimonialCard({
         <blockquote className="text-base leading-relaxed font-light">{testimonial.quote}</blockquote>
         <figcaption className="mt-4">
           <p className="font-medium text-white">
-            — {testimonial.name}
-            <span className="ms-1 text-white/60">{testimonial.role}</span>
+            — {testimonial.name}{' '}
+            <span className="text-white/60">{testimonial.role}</span>
           </p>
         </figcaption>
       </div>

@@ -78,10 +78,65 @@ export const FlickeringGrid: FC<FlickeringGridProps> = ({
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
-  const [isInView, setIsInView] = useState(false)
+  const isInViewRef = useRef(false)
   const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 })
 
   const memoizedColor = useMemo(() => getRGBA(color), [color])
+
+  /** Built once per resize — avoids getImageData per cell every frame (was extremely expensive). */
+  const buildTextMaskFlags = useCallback(
+    (
+      canvasWidth: number,
+      canvasHeight: number,
+      cols: number,
+      rows: number,
+      dpr: number,
+    ): Uint8Array => {
+      const flags = new Uint8Array(cols * rows)
+      if (!text || !canvasWidth || !canvasHeight) {
+        return flags
+      }
+
+      const maskCanvas = document.createElement('canvas')
+      maskCanvas.width = canvasWidth
+      maskCanvas.height = canvasHeight
+      const maskCtx = maskCanvas.getContext('2d', { willReadFrequently: true })
+      if (!maskCtx) {
+        return flags
+      }
+
+      maskCtx.save()
+      maskCtx.scale(dpr, dpr)
+      maskCtx.fillStyle = 'white'
+      maskCtx.font = `${fontWeight} ${fontSize}px "Tajawal", "Segoe UI", Tahoma, sans-serif`
+      maskCtx.textAlign = 'center'
+      maskCtx.textBaseline = 'middle'
+      maskCtx.fillText(text, canvasWidth / (2 * dpr), canvasHeight / (2 * dpr))
+      maskCtx.restore()
+
+      const { data, width: imgW } = maskCtx.getImageData(0, 0, canvasWidth, canvasHeight)
+      const squareWidth = squareSize * dpr
+      const squareHeight = squareSize * dpr
+      const step = squareSize + gridGap
+
+      for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+          const x = Math.min(imgW - 1, Math.floor(i * step * dpr + squareWidth / 2))
+          const y = Math.min(
+            canvasHeight - 1,
+            Math.floor(j * step * dpr + squareHeight / 2),
+          )
+          const p = (y * imgW + x) * 4
+          if (data[p]! > 0 || data[p + 3]! > 0) {
+            flags[i * rows + j] = 1
+          }
+        }
+      }
+
+      return flags
+    },
+    [text, fontSize, fontWeight, squareSize, gridGap],
+  )
 
   const drawGrid = useCallback(
     (
@@ -92,39 +147,20 @@ export const FlickeringGrid: FC<FlickeringGridProps> = ({
       rows: number,
       squares: Float32Array,
       dpr: number,
+      cellHasText: Uint8Array,
     ) => {
       ctx.clearRect(0, 0, canvasWidth, canvasHeight)
 
-      const maskCanvas = document.createElement('canvas')
-      maskCanvas.width = canvasWidth
-      maskCanvas.height = canvasHeight
-      const maskCtx = maskCanvas.getContext('2d', { willReadFrequently: true })
-      if (!maskCtx) {
-        return
-      }
-
-      if (text) {
-        maskCtx.save()
-        maskCtx.scale(dpr, dpr)
-        maskCtx.fillStyle = 'white'
-        maskCtx.font = `${fontWeight} ${fontSize}px "Tajawal", "Segoe UI", Tahoma, sans-serif`
-        maskCtx.textAlign = 'center'
-        maskCtx.textBaseline = 'middle'
-        maskCtx.fillText(text, canvasWidth / (2 * dpr), canvasHeight / (2 * dpr))
-        maskCtx.restore()
-      }
+      const squareWidth = squareSize * dpr
+      const squareHeight = squareSize * dpr
 
       for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
           const x = i * (squareSize + gridGap) * dpr
           const y = j * (squareSize + gridGap) * dpr
-          const squareWidth = squareSize * dpr
-          const squareHeight = squareSize * dpr
-
-          const maskData = maskCtx.getImageData(x, y, squareWidth, squareHeight).data
-          const hasText = maskData.some((value, index) => index % 4 === 0 && value > 0)
-
-          const opacity = squares[i * rows + j]
+          const idx = i * rows + j
+          const hasText = cellHasText[idx] === 1
+          const opacity = squares[idx]
           const finalOpacity = hasText ? Math.min(1, opacity * 3 + 0.4) : opacity
 
           ctx.fillStyle = colorWithOpacity(memoizedColor, finalOpacity)
@@ -132,7 +168,7 @@ export const FlickeringGrid: FC<FlickeringGridProps> = ({
         }
       }
     },
-    [memoizedColor, squareSize, gridGap, text, fontSize, fontWeight],
+    [memoizedColor, squareSize, gridGap],
   )
 
   const setupCanvas = useCallback(
@@ -150,9 +186,11 @@ export const FlickeringGrid: FC<FlickeringGridProps> = ({
         squares[i] = Math.random() * maxOpacity
       }
 
-      return { cols, rows, squares, dpr }
+      const cellHasText = buildTextMaskFlags(canvas.width, canvas.height, cols, rows, dpr)
+
+      return { cols, rows, squares, dpr, cellHasText }
     },
-    [squareSize, gridGap, maxOpacity],
+    [squareSize, gridGap, maxOpacity, buildTextMaskFlags],
   )
 
   const updateSquares = useCallback(
@@ -191,12 +229,15 @@ export const FlickeringGrid: FC<FlickeringGridProps> = ({
     updateCanvasSize()
 
     let lastTime = 0
+    let started = false
     const animate = (time: number) => {
-      if (!isInView) {
+      if (!isInViewRef.current) {
+        started = false
         return
       }
 
-      const deltaTime = (time - lastTime) / 1000
+      const deltaTime = started ? (time - lastTime) / 1000 : 0
+      started = true
       lastTime = time
 
       updateSquares(gridParams.squares, deltaTime)
@@ -208,6 +249,7 @@ export const FlickeringGrid: FC<FlickeringGridProps> = ({
         gridParams.rows,
         gridParams.squares,
         gridParams.dpr,
+        gridParams.cellHasText,
       )
       animationFrameId = requestAnimationFrame(animate)
     }
@@ -220,23 +262,59 @@ export const FlickeringGrid: FC<FlickeringGridProps> = ({
 
     const intersectionObserver = new IntersectionObserver(
       ([entry]) => {
-        setIsInView(entry.isIntersecting)
+        const next = entry.isIntersecting
+        isInViewRef.current = next
+        if (next) {
+          cancelAnimationFrame(animationFrameId)
+          lastTime = 0
+          started = false
+          animationFrameId = requestAnimationFrame(animate)
+        } else {
+          cancelAnimationFrame(animationFrameId)
+        }
       },
-      { threshold: 0 },
+      { threshold: 0, rootMargin: '120px' },
     )
 
     intersectionObserver.observe(canvas)
 
-    if (isInView) {
-      animationFrameId = requestAnimationFrame(animate)
+    const syncInViewAndMaybeStart = () => {
+      const rect = canvas.getBoundingClientRect()
+      const vh = window.innerHeight || document.documentElement.clientHeight
+      const vw = window.innerWidth || document.documentElement.clientWidth || 0
+      const visible =
+        rect.bottom > 0 && rect.top < vh && rect.right > 0 && rect.left < vw
+      isInViewRef.current = visible
+      if (visible && !document.hidden) {
+        cancelAnimationFrame(animationFrameId)
+        lastTime = 0
+        started = false
+        animationFrameId = requestAnimationFrame(animate)
+      }
     }
+    syncInViewAndMaybeStart()
+
+    const onVisibilityChange = () => {
+      if (document.hidden) {
+        cancelAnimationFrame(animationFrameId)
+        return
+      }
+      if (isInViewRef.current) {
+        cancelAnimationFrame(animationFrameId)
+        lastTime = 0
+        started = false
+        animationFrameId = requestAnimationFrame(animate)
+      }
+    }
+    document.addEventListener('visibilitychange', onVisibilityChange)
 
     return () => {
       cancelAnimationFrame(animationFrameId)
       resizeObserver.disconnect()
       intersectionObserver.disconnect()
+      document.removeEventListener('visibilitychange', onVisibilityChange)
     }
-  }, [setupCanvas, updateSquares, drawGrid, width, height, isInView])
+  }, [setupCanvas, updateSquares, drawGrid, width, height])
 
   return (
     <div ref={containerRef} className={cn('h-full w-full', className)} {...props}>

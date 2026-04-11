@@ -1,6 +1,13 @@
 import { ArrowUpRight } from 'lucide-react'
+import { motion, useReducedMotion } from 'motion/react'
 
 import { PageSection } from '@/components/layout/page-section'
+import {
+  fadeUpVariants,
+  revealViewport,
+  staggerContainerVariants,
+  staggerItemVariants,
+} from '@/lib/motion-reveal'
 import { cn } from '@/lib/utils'
 import { SITE_SECTION_IDS } from '@/lib/site-nav'
 
@@ -22,9 +29,9 @@ const projects: Project[] = [
   },
   {
     title: 'هاربر هيلث',
-    tag: 'نظام تصميم · إتاحة',
+    tag: 'نظام تصميم · سهولة استخدام',
     description:
-      'مسارات للمرضى ونظام رموز موحّد يمكّن الفريق الهندسي من الإطلاق بثبات.',
+      'مسارات للمرضى ومعايير بصرية موحّدة تسهّل على فريق الهندسة الإطلاق بثبات.',
     image:
       'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=1200',
   },
@@ -32,7 +39,7 @@ const projects: Project[] = [
     title: 'ريلاي ميرشنت',
     tag: 'هوية · موقع تسويقي',
     description:
-      'تموضع، إخراج فني، وموقع سريع يعكس عرضًا منتجًا مصقولًا.',
+      'تموضع، وهوية بصرية، وموقع سريع يعرض المنتج بشكل راقٍ وواضح.',
     image:
       'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1200',
   },
@@ -72,24 +79,60 @@ function WorkCard({ project, className }: { project: Project; className?: string
 }
 
 export function SelectedWorkSection() {
+  const reduceMotion = useReducedMotion()
+
   return (
     <PageSection sectionId={SITE_SECTION_IDS.work} className="section-shell bg-background">
       <div className="mx-auto max-w-6xl px-4">
-        <div className="mx-auto max-w-3xl text-center">
-          <h2 className="section-title">
-            <span className="instrument font-semibold not-italic">أعمال</span> مختارة
-          </h2>
-          <p className="section-lede mx-auto">
-            مشاريع حديثة في واجهات المنتجات وأنظمة التصميم ومواقع الإطلاق—صُمّمت لفرق تهتم بجودة
-            التجربة.
-          </p>
-        </div>
+        {reduceMotion ? (
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="section-title">
+              <span className="instrument font-semibold not-italic">أعمال</span> مختارة
+            </h2>
+            <p className="section-lede mx-auto">
+              مشاريع حديثة في واجهات المنتجات وأنظمة التصميم ومواقع الإطلاق—صُمّمت لفرق تهتم بجودة
+              التجربة.
+            </p>
+          </div>
+        ) : (
+          <motion.div
+            className="mx-auto max-w-3xl text-center"
+            variants={fadeUpVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={revealViewport}
+          >
+            <h2 className="section-title">
+              <span className="instrument font-semibold not-italic">أعمال</span> مختارة
+            </h2>
+            <p className="section-lede mx-auto">
+              مشاريع حديثة في واجهات المنتجات وأنظمة التصميم ومواقع الإطلاق—صُمّمت لفرق تهتم بجودة
+              التجربة.
+            </p>
+          </motion.div>
+        )}
 
-        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project) => (
-            <WorkCard key={project.title} project={project} />
-          ))}
-        </div>
+        {reduceMotion ? (
+          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {projects.map((project) => (
+              <WorkCard key={project.title} project={project} />
+            ))}
+          </div>
+        ) : (
+          <motion.div
+            className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+            variants={staggerContainerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={revealViewport}
+          >
+            {projects.map((project) => (
+              <motion.div key={project.title} variants={staggerItemVariants} className="min-w-0">
+                <WorkCard project={project} />
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
       </div>
     </PageSection>
   )

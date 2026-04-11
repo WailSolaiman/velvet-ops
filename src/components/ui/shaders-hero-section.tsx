@@ -1,5 +1,5 @@
 import { MeshGradient, PulsingBorder } from '@paper-design/shaders-react'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import type { ReactNode } from 'react'
 
 import { ThemeToggle } from '@/components/layout/theme-toggle'
@@ -11,21 +11,9 @@ interface ShaderBackgroundProps {
 
 export function ShaderBackground({ children }: ShaderBackgroundProps) {
   return (
-    <div className="relative min-h-screen w-full overflow-hidden">
+    <div className="relative min-h-dvh min-h-screen w-full overflow-hidden">
       <svg className="absolute inset-0 h-0 w-0">
         <defs>
-          <filter id="glass-effect" x="-50%" y="-50%" width="200%" height="200%">
-            <feTurbulence baseFrequency="0.005" numOctaves="1" result="noise" />
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="0.3" />
-            <feColorMatrix
-              type="matrix"
-              values="1 0 0 0 0.02
-                      0 1 0 0 0.02
-                      0 0 1 0 0.05
-                      0 0 0 0.9 0"
-              result="tint"
-            />
-          </filter>
           <filter id="gooey-filter" x="-50%" y="-50%" width="200%" height="200%">
             <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur" />
             <feColorMatrix
@@ -60,7 +48,10 @@ export function ShaderBackground({ children }: ShaderBackgroundProps) {
 
 export function PulsingCircle() {
   return (
-    <div className="absolute end-8 bottom-8 z-30">
+    <div
+      className="pointer-events-none absolute end-4 bottom-24 z-20 sm:end-8 sm:bottom-8"
+      aria-hidden
+    >
       <div className="relative flex h-20 w-20 items-center justify-center">
         <PulsingBorder
           colors={['#BEECFF', '#E77EDC', '#FF4C3E', '#00FF88', '#FFD700', '#FF6B35', '#8A2BE2']}
@@ -115,41 +106,36 @@ export function PulsingCircle() {
 
 export function HeroContent() {
   return (
-    <div className="absolute bottom-8 start-8 z-20 max-w-lg">
-      <div className="text-start">
-        <div
-          className="relative mb-4 inline-flex items-center rounded-full bg-white/5 px-3 py-1 backdrop-blur-sm"
-          style={{
-            filter: 'url(#glass-effect)',
-          }}
-        >
-          <div className="absolute top-0 end-1 start-1 h-px rounded-full bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-          <span className="relative z-10 text-xs font-light text-white/90">
+    <div className="absolute inset-x-4 bottom-[max(1.5rem,env(safe-area-inset-bottom,0px))] z-30 max-w-xl sm:inset-x-8 md:bottom-8 md:inset-x-auto md:ms-8 md:max-w-xl">
+      <div className="text-start rounded-2xl border border-white/10 bg-black/50 p-4 shadow-[0_8px_40px_rgba(0,0,0,0.45)] backdrop-blur-md sm:p-5 md:p-6">
+        <div className="relative mb-4 inline-flex items-center rounded-full border border-white/10 bg-white/10 px-3 py-1 backdrop-blur-sm">
+          <div className="absolute top-0 end-1 start-1 h-px rounded-full bg-gradient-to-r from-transparent via-white/25 to-transparent" />
+          <span className="relative z-10 text-xs font-medium text-white/95">
             استوديو منتجات رقمية
           </span>
         </div>
 
-        <h1 className="mb-4 text-5xl font-light tracking-tight text-white md:text-6xl md:leading-[1.25]">
+        <h1 className="mb-4 text-4xl font-light tracking-tight text-white text-balance drop-shadow-[0_2px_14px_rgba(0,0,0,0.65)] sm:text-5xl md:text-6xl md:leading-[1.25]">
           <span className="instrument font-semibold not-italic">فيلفت</span> أوبس
           <br />
-          <span className="font-light tracking-tight text-white">منتجات بذوقٍ راقٍ.</span>
+          <span className="font-normal tracking-tight text-white">منتجات بذوقٍ راقٍ.</span>
         </h1>
 
-        <p className="mb-4 text-xs leading-relaxed font-light text-white/70">
-          نعمل مع فرقٍ طموحة لتصميم وإطلاق واجهات ومنتجات وواجهات أمامية تُحسّن تجربة الاستخدام—استراتيجية
+        <p className="mb-5 text-sm leading-relaxed font-normal text-pretty text-white/88">
+          نعمل مع فرقٍ طموحة لتصميم وإطلاق منتجات وواجهات أمامية تُحسّن تجربة الاستخدام—استراتيجية
           وحرفية وبرمجة في استوديو واحد.
         </p>
 
-        <div className="flex flex-wrap items-center gap-4">
+        <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
           <a
             href={`#${SITE_SECTION_IDS.work}`}
-            className="hero-focus cursor-pointer rounded-full border border-white/30 bg-transparent px-8 py-3 text-xs font-normal text-white transition-all duration-200 hover:border-white/50 hover:bg-white/10"
+            className="hero-focus inline-flex min-h-11 cursor-pointer items-center justify-center rounded-full border border-white/30 bg-transparent px-6 py-3 text-center text-xs font-normal text-white transition-all duration-200 hover:border-white/50 hover:bg-white/10 sm:min-h-0 sm:px-8"
           >
             أعمالنا
           </a>
           <a
             href={`#${SITE_SECTION_IDS.cta}`}
-            className="hero-focus cursor-pointer rounded-full bg-white px-8 py-3 text-xs font-normal text-black transition-all duration-200 hover:bg-white/90"
+            className="hero-focus inline-flex min-h-11 cursor-pointer items-center justify-center rounded-full bg-white px-6 py-3 text-center text-xs font-normal text-black transition-all duration-200 hover:bg-white/90 sm:min-h-0 sm:px-8"
           >
             ابدأ مشروعًا
           </a>
@@ -161,10 +147,10 @@ export function HeroContent() {
 
 export function HeroHeader() {
   return (
-    <header className="relative z-20 flex items-center justify-between p-6">
+    <header className="relative z-20 grid grid-cols-2 grid-rows-[auto_auto] gap-x-3 gap-y-4 px-4 pb-4 pt-[max(1rem,env(safe-area-inset-top,0px))] [grid-template-areas:'logo_actions'_'nav_nav'] sm:px-6 sm:pb-6 md:grid-cols-[auto_minmax(0,1fr)_auto] md:grid-rows-1 md:items-center md:gap-x-4 md:[grid-template-areas:'logo_nav_actions']">
       <a
         href={`#${SITE_SECTION_IDS.hero}`}
-        className="hero-focus flex items-center rounded-sm"
+        className="hero-focus [grid-area:logo] flex shrink-0 items-center rounded-sm"
         aria-label="الصفحة الرئيسية"
       >
         <svg
@@ -185,7 +171,7 @@ export function HeroHeader() {
       </a>
 
       <nav
-        className="flex flex-wrap items-center justify-end gap-1 sm:gap-2"
+        className="[grid-area:nav] flex min-w-0 flex-wrap items-center justify-center gap-x-1 gap-y-2 sm:gap-x-2 md:justify-center"
         aria-label="التنقل الرئيسي"
       >
         <a
@@ -220,7 +206,7 @@ export function HeroHeader() {
         </a>
       </nav>
 
-      <div className="flex items-center gap-2">
+      <div className="[grid-area:actions] flex min-w-0 items-center justify-end gap-2">
         <div
           id="gooey-btn"
           className="group relative flex items-center"

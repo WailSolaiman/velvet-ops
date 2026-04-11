@@ -11,13 +11,15 @@ import { motion, useReducedMotion } from 'motion/react'
 
 import { FeatureCard, type FeatureItem } from '@/components/ui/grid-feature-cards'
 import { PageSection } from '@/components/layout/page-section'
+import { revealViewport, staggerContainerVariants, staggerItemVariants } from '@/lib/motion-reveal'
 import { SITE_SECTION_IDS } from '@/lib/site-nav'
 
 const services: FeatureItem[] = [
   {
     title: 'المنتج وتجربة الاستخدام',
     icon: Layout,
-    description: 'مسارات، معلومات، وواجهات عالية الدقة لتطبيقات الويب—وضوح للمجالات المعقّدة.',
+    description:
+      'مسارات استخدام، وتنظيم للمحتوى، وواجهات تفصيلية لتطبيقات الويب—وضوح حتى مع التعقيد.',
   },
   {
     title: 'الهوية والمرئيات',
@@ -27,22 +29,22 @@ const services: FeatureItem[] = [
   {
     title: 'تطوير الواجهة الأمامية',
     icon: Code2,
-    description: 'React، رموز تصميم، وأداء يطابق التصميم.',
+    description: 'React، ومكوّنات ومعايير بصرية، وأداء قريب من التصميم المتفق عليه.',
   },
   {
     title: 'أنظمة التصميم',
     icon: Boxes,
-    description: 'مكوّنات، توثيق، وحوكمة لإطلاق متسق بين الفرق.',
+    description: 'مكوّنات وتوثيق، وقواعد استخدام موحّدة، لإطلاق متناسق بين الفرق.',
   },
   {
     title: 'الإطلاق والتسويق',
     icon: Sparkles,
-    description: 'سطح منتج وحملات تروّج لقصة واحدة عبر القنوات.',
+    description: 'صفحة المنتج وحملات تروّج لقصة واحدة عبر القنوات.',
   },
   {
     title: 'شراكة مدمجة',
     icon: Users,
-    description: 'سعة تصميم وتطوير واجهة مستمرة بجانب فريقك—إيقاع أسبوعي.',
+    description: 'وقت مخصّص شهريًا للتصميم وتطوير الواجهة بجانب فريقك—إيقاع أسبوعي واضح.',
   },
 ]
 
@@ -71,6 +73,8 @@ function AnimatedContainer({ className, delay = 0.1, children }: AnimatedProps) 
 }
 
 export function ServicesSection() {
+  const reduce = useReducedMotion()
+
   return (
     <PageSection sectionId={SITE_SECTION_IDS.services} className="section-shell">
       <div className="mx-auto w-full max-w-5xl space-y-8 px-4">
@@ -84,14 +88,27 @@ export function ServicesSection() {
           </p>
         </AnimatedContainer>
 
-        <AnimatedContainer
-          delay={0.4}
-          className="grid grid-cols-1 divide-x divide-y divide-dashed overflow-hidden rounded-xl border border-dashed sm:grid-cols-2 md:grid-cols-3"
-        >
-          {services.map((feature) => (
-            <FeatureCard key={feature.title} feature={feature} />
-          ))}
-        </AnimatedContainer>
+        {reduce ? (
+          <div className="grid grid-cols-1 divide-x divide-y divide-dashed overflow-hidden rounded-xl border border-dashed sm:grid-cols-2 md:grid-cols-3">
+            {services.map((feature) => (
+              <FeatureCard key={feature.title} feature={feature} />
+            ))}
+          </div>
+        ) : (
+          <motion.div
+            className="grid grid-cols-1 divide-x divide-y divide-dashed overflow-hidden rounded-xl border border-dashed sm:grid-cols-2 md:grid-cols-3"
+            variants={staggerContainerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={revealViewport}
+          >
+            {services.map((feature) => (
+              <motion.div key={feature.title} variants={staggerItemVariants} className="min-w-0">
+                <FeatureCard feature={feature} />
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
       </div>
     </PageSection>
   )

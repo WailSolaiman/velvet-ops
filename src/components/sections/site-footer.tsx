@@ -64,24 +64,28 @@ const footerLinks = [
 ] as const
 
 const description =
-  'فيلفت أوبس استوديو منتجات رقمية—استراتيجية، حرفية واجهات، وتسليم واجهات أمامية لفرق تريد إطلاقًا هادئًا ومدروسًا.'
+  'فيلفت أوبس استوديو منتجات رقمية—تخطيط، وتصميم واجهات بعناية، وتسليم واجهات أمامية لفرق تريد إطلاقًا هادئًا ومدروسًا.'
 
 export function SiteFooterSection() {
   const tablet = useMediaQuery('(max-width: 1024px)')
+  const narrow = useMediaQuery('(max-width: 480px)')
 
   return (
-    <PageSection sectionId={SITE_SECTION_IDS.footer} className="w-full pb-0 pt-10 md:pt-14">
-      <footer className="w-full pb-0">
-        <div className="flex flex-col p-10 md:flex-row md:items-center md:justify-between">
-          <div className="mx-0 flex max-w-xs flex-col items-start justify-start gap-y-5">
+    <PageSection
+      sectionId={SITE_SECTION_IDS.footer}
+      className="w-full overflow-x-hidden pb-[max(0px,env(safe-area-inset-bottom,0px))] pt-10 md:pt-14"
+    >
+      <footer className="w-full min-w-0 pb-0">
+        <div className="flex flex-col gap-10 px-4 pb-2 pt-0 sm:px-6 md:flex-row md:items-start md:justify-between md:gap-12 md:px-8 lg:gap-16 lg:px-10">
+          <div className="mx-0 flex min-w-0 w-full max-w-md flex-col items-start justify-start gap-y-5 md:max-w-sm lg:max-w-xs lg:shrink-0">
             <a
-              href="#hero"
+              href={`#${SITE_SECTION_IDS.hero}`}
               className="hover:text-foreground/90 flex items-center gap-2 rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
             >
-              <LogoIcon className="size-8" />
+              <LogoIcon className="size-8 shrink-0" />
               <p className="text-foreground text-xl font-light tracking-tight">فيلفت أوبس</p>
             </a>
-            <p className="text-muted-foreground font-light tracking-tight">{description}</p>
+            <p className="text-muted-foreground text-pretty font-light tracking-tight">{description}</p>
             <div className="flex flex-wrap gap-2">
               {['عن بُعد', 'سرية وNDA', 'أوروبا والولايات المتحدة'].map((label) => (
                 <span
@@ -93,43 +97,45 @@ export function SiteFooterSection() {
               ))}
             </div>
           </div>
-          <div className="pt-5 md:w-1/2">
-            <div className="flex flex-col items-start justify-start gap-y-5 md:flex-row md:items-center md:justify-between lg:ps-10">
+          <div className="min-w-0 w-full md:flex-1 md:pt-0">
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-8 md:gap-x-10 lg:grid-cols-3 lg:gap-x-8 xl:gap-10">
               {footerLinks.map((column, columnIndex) => (
-                <ul key={columnIndex} className="flex flex-col gap-y-2">
-                  <li className="text-foreground mb-2 text-sm font-medium tracking-tight">
+                <div key={columnIndex} className="min-w-0">
+                  <p className="text-foreground mb-3 text-sm font-medium tracking-tight">
                     {column.title}
-                  </li>
-                  {column.links.map((link) => (
-                    <li
-                      key={link.id}
-                      className="group text-muted-foreground inline-flex cursor-pointer items-center justify-start gap-1 text-[15px]/snug"
-                    >
-                      <a
-                        href={link.url}
-                        className="rounded-sm transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                  </p>
+                  <ul className="grid grid-cols-2 gap-x-3 gap-y-1 sm:flex sm:flex-col sm:gap-x-0 sm:gap-y-2">
+                    {column.links.map((link) => (
+                      <li
+                        key={link.id}
+                        className="group text-muted-foreground flex min-w-0 cursor-pointer items-center justify-start gap-1 text-[15px]/snug"
                       >
-                        {link.title}
-                      </a>
-                      <div className="border-border flex size-4 translate-x-0 transform items-center justify-center rounded border opacity-0 transition-all duration-300 ease-out group-hover:translate-x-1 group-hover:opacity-100 rtl:group-hover:-translate-x-1">
-                        <ChevronRight className="h-4 w-4 rtl:rotate-180" />
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+                        <a
+                          href={link.url}
+                          className="inline-flex min-h-9 min-w-0 flex-1 items-center rounded-sm py-1 transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none sm:min-h-0 sm:py-0"
+                        >
+                          <span className="min-w-0 break-words sm:break-normal">{link.title}</span>
+                        </a>
+                        <div className="border-border flex size-4 shrink-0 translate-x-0 transform items-center justify-center self-center rounded border opacity-0 transition-all duration-300 ease-out group-hover:translate-x-1 group-hover:opacity-100 rtl:group-hover:-translate-x-1">
+                          <ChevronRight className="h-4 w-4 rtl:rotate-180" />
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               ))}
             </div>
           </div>
         </div>
-        <div className="relative z-0 mt-12 h-48 w-full md:mt-14 md:h-64">
+        <div className="relative z-0 mt-8 h-40 w-full min-w-0 overflow-hidden sm:mt-10 sm:h-48 md:mt-12 md:h-64">
           <div className="from-40% absolute inset-0 z-10 bg-gradient-to-t from-transparent to-background" />
-          <div className="absolute inset-0 mx-6">
+          <div className="absolute inset-y-0 start-4 end-4 sm:start-6 sm:end-6 md:start-8 md:end-8">
             <FlickeringGrid
               text={tablet ? 'فيلفت أوبس' : 'منتجات بذوقٍ راقٍ.'}
-              fontSize={tablet ? 70 : 90}
-              className="h-full w-full"
+              fontSize={narrow ? 48 : tablet ? 70 : 90}
+              className="h-full w-full min-w-0"
               squareSize={2}
-              gridGap={tablet ? 2 : 3}
+              gridGap={narrow ? 2 : tablet ? 2 : 3}
               color="var(--muted-foreground)"
               maxOpacity={0.3}
               flickerChance={0.1}

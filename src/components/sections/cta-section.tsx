@@ -19,7 +19,7 @@ export function CtaSection() {
           <span className="instrument font-semibold not-italic">جاهز</span> لبناء منتج يدوم؟
         </h2>
         <p className="section-lede mx-auto mt-1">
-          صِفْ منتجك وجدولك وقيودك. نرد بصدق حول الملاءمة، والخطوات التالية، وشكل تعاون محتمل.
+          صِفْ منتجك وجدولك وقيودك. نرد بصدق حول مدى التناسب، والخطوات التالية، وشكل تعاون محتمل.
         </p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
           <a

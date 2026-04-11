@@ -10,7 +10,7 @@ const testimonialsData: Testimonial[] = [
     quote:
       'أدخلت فيلفت أوبس هيكلًا وذوقًا إلى خارطة طريق مليئة بالفوضى. سلّموا نسخة أولى جديرة بالثقة وتركوا فريقنا بنظام ما زلنا نوسّعه.',
     name: 'نورة السعد',
-    role: 'نائبة المنتج، نورثلَين',
+    role: 'نائبة المنتج، شركة أفق البيانات',
     imageSrc: '/testimonials/noura-al-saad.jpeg',
   },
   {
@@ -18,7 +18,7 @@ const testimonialsData: Testimonial[] = [
     quote:
       'أخيرًا موقع إطلاق يعكس المنتج. فهمت فيلفت أوبس السرد والتنفيذ، لا مجرد شاشات جميلة.',
     name: 'ليان المطيري',
-    role: 'المؤسسة المشاركة، ريلاي ميرشنت',
+    role: 'المؤسسة المشاركة، سِلمى للتجارة',
     imageSrc: '/testimonials/layan-almutairi.jpeg',
   },
   {
@@ -26,7 +26,7 @@ const testimonialsData: Testimonial[] = [
     quote:
       'جودة التصميم واضحة—لكن الأهم أنهم انسجموا مع الهندسة. مفاجآت أقل ودمج أسرع في كل إصدار.',
     name: 'خالد الرشيد',
-    role: 'رئيس التقنية، هاربر هيلث',
+    role: 'رئيس التقنية، مجمع نُور الطبي',
     imageSrc: '/testimonials/khaled-alrashid.jpeg',
   },
 ]
@@ -40,7 +40,7 @@ export function TestimonialsSection() {
             <span className="instrument font-semibold not-italic">آراء</span> العملاء
           </>
         }
-        subtitle="من قادة منتج وهندسة عملنا معهم—نتائج لا أرقام مزيّفة."
+        subtitle="شهادات من فرق تعاونّا معها في المنتج والهندسة—كلام واقعي عن التعاون، لا أرقام مُصطنعة."
         testimonials={testimonialsData}
       />
     </PageSection>
