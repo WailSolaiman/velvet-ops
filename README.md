@@ -2,6 +2,9 @@
 
 **Velvet Ops** (فيلفت أوبس) is a product design and front-end studio. This repository powers our public site: a single-page experience that presents how we work, who we work with, and how to partner with us—built for clarity, motion, and Arabic-first typography.
 
+Live site: https://velvet.wailsolaiman.com/  
+Repository: https://github.com/WailSolaiman/velvet-ops/
+
 ---
 
 ## Local development
