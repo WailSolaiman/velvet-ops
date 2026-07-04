@@ -7,7 +7,7 @@ function App() {
   return (
     <div className="min-h-dvh bg-background text-foreground">
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="*" element={<Home />} />
       </Routes>
       <BackToTop />
     </div>

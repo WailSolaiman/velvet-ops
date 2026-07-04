@@ -4,6 +4,8 @@ import { PageSection } from '@/components/layout/page-section'
 import { SITE_SECTION_IDS } from '@/lib/site-nav'
 
 /** صور بورتريه 3:4 — الملفات في public/testimonials/ بصيغة .jpeg */
+const withBase = (path: string) => `${import.meta.env.BASE_URL}${path}`
+
 const testimonialsData: Testimonial[] = [
   {
     id: 1,
@@ -11,7 +13,7 @@ const testimonialsData: Testimonial[] = [
       'أدخلت فيلفت أوبس هيكلًا وذوقًا إلى خارطة طريق مليئة بالفوضى. سلّموا نسخة أولى جديرة بالثقة وتركوا فريقنا بنظام ما زلنا نوسّعه.',
     name: 'نورة السعد',
     role: 'نائبة المنتج، شركة أفق البيانات',
-    imageSrc: '/testimonials/noura-al-saad.jpeg',
+    imageSrc: withBase('testimonials/noura-al-saad.jpeg'),
   },
   {
     id: 2,
@@ -19,7 +21,7 @@ const testimonialsData: Testimonial[] = [
       'أخيرًا موقع إطلاق يعكس المنتج. فهمت فيلفت أوبس السرد والتنفيذ، لا مجرد شاشات جميلة.',
     name: 'ليان المطيري',
     role: 'المؤسسة المشاركة، سِلمى للتجارة',
-    imageSrc: '/testimonials/layan-almutairi.jpeg',
+    imageSrc: withBase('testimonials/layan-almutairi.jpeg'),
   },
   {
     id: 3,
@@ -27,7 +29,7 @@ const testimonialsData: Testimonial[] = [
       'جودة التصميم واضحة—لكن الأهم أنهم انسجموا مع الهندسة. مفاجآت أقل ودمج أسرع في كل إصدار.',
     name: 'خالد الرشيد',
     role: 'رئيس التقنية، مجمع نُور الطبي',
-    imageSrc: '/testimonials/khaled-alrashid.jpeg',
+    imageSrc: withBase('testimonials/khaled-alrashid.jpeg'),
   },
 ]
 
